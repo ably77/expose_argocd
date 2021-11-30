@@ -1,0 +1,30 @@
+apiVersion: gateway.solo.io/v1
+kind: VirtualService
+metadata:
+  name: 'argo-ui-vs'
+  namespace: 'gloo-system'
+spec:
+  sslConfig:
+    secretRef:
+      name: cf-upstream-tls
+      namespace: gloo-system
+  virtualHost:
+    domains:
+    - 'argocd.kapoozi.com'
+    routes:
+    - matchers:
+       - prefix: '/argo'
+      routeAction:
+        single:
+          upstream:
+            name: 'argocd-argocd-server-443'
+            namespace: 'gloo-system'
+      options:
+        prefixRewrite: '/argo'
+    - matchers:
+       - prefix: '/'
+      routeAction:
+        single:
+          upstream:
+            name: 'argocd-argocd-server-443'
+            namespace: 'gloo-system'

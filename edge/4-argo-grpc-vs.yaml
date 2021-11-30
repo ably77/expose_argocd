@@ -1,0 +1,22 @@
+apiVersion: gateway.solo.io/v1
+kind: VirtualService
+metadata:
+  name: argocd-grpc
+  namespace: gloo-system
+spec:
+  sslConfig:
+    secretRef:
+      name: cf-upstream-tls
+      namespace: gloo-system
+  virtualHost:
+    domains:
+    - 'argogrpc.kapoozi.com'
+    - 'argogrpc.kapoozi.com:443'    
+    routes:
+    - matchers:
+      - prefix: /
+      routeAction:
+        single:
+          upstream:
+            name: static-argocd-argogrpc-443
+            namespace: gloo-system
